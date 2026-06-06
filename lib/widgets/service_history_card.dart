@@ -41,7 +41,7 @@ class ServiceHistoryCard extends StatelessWidget {
           const SizedBox(height: 12),
           ServiceCategoryRow(
             category: item.category,
-            categoryIconAsset: item.categoryIconAsset,
+            categoryKey: item.categoryKey,
             showChevron: item.showChevron,
             isExpanded: isExpanded,
             onTap: onToggleExpanded,

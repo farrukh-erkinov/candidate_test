@@ -22,10 +22,10 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
   static const _vakuumLogo = 'assets/images/vakuum_center.png';
   static const _masterproLogo = 'assets/images/masterpro.png';
   static const _propanLogo = 'assets/images/propan_quvvat.png';
-  static const _bodyIcon = 'assets/icons/category_body.png';
-  static const _chassisIcon = 'assets/icons/category_chassis.png';
-  static const _fuelIcon = 'assets/icons/category_fuel.png';
-  static const _propanIcon = 'assets/icons/category_propan.png';
+  static const _bodyKey = 'body';
+  static const _chassisKey = 'chassis';
+  static const _fuelKey = 'fuel';
+  static const _propanKey = 'propan';
 
   static const _items = <ServiceHistoryItem>[
     ServiceHistoryItem(
@@ -35,7 +35,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       rating: 4.8,
       status: ServiceStatus.inProgress,
       category: 'Кузов',
-      categoryIconAsset: _bodyIcon,
+      categoryKey: _bodyKey,
       dateLabel: 'Дата начала',
       dateValue: '10.03.2026',
       odometer: '38 500',
@@ -52,7 +52,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       rating: 4.8,
       status: ServiceStatus.rejected,
       category: 'Ходовая часть',
-      categoryIconAsset: _chassisIcon,
+      categoryKey: _chassisKey,
       dateLabel: 'Дата отказа',
       dateValue: '20.03.2026',
       odometer: '40 300',
@@ -68,7 +68,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       id: 'azs_250',
       status: ServiceStatus.completed,
       category: 'АЗС',
-      categoryIconAsset: _fuelIcon,
+      categoryKey: _fuelKey,
       dateLabel: 'Дата конца',
       dateValue: '10.03.2026',
       odometer: '38 400',
@@ -84,7 +84,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       rating: 4.8,
       status: ServiceStatus.completed,
       category: 'АГЗС (пропан)',
-      categoryIconAsset: _propanIcon,
+      categoryKey: _propanKey,
       dateLabel: 'Дата конца',
       dateValue: '09.03.2026',
       odometer: '38 230',
@@ -97,7 +97,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       rating: 4.8,
       status: ServiceStatus.completed,
       category: 'АЗС',
-      categoryIconAsset: _fuelIcon,
+      categoryKey: _fuelKey,
       dateLabel: 'Дата конца',
       dateValue: '07.03.2026',
       odometer: '38 050',
@@ -110,7 +110,7 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
       id: 'azs_412',
       status: ServiceStatus.completed,
       category: 'АЗС',
-      categoryIconAsset: _fuelIcon,
+      categoryKey: _fuelKey,
       dateLabel: 'Дата конца',
       dateValue: '04.03.2026',
       odometer: '37 290',

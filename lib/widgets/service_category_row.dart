@@ -4,21 +4,21 @@ class ServiceCategoryRow extends StatelessWidget {
   const ServiceCategoryRow({
     super.key,
     required this.category,
-    required this.categoryIconAsset,
+    required this.categoryKey,
     this.showChevron = true,
     this.isExpanded = false,
     this.onTap,
   });
 
   final String category;
-  final String categoryIconAsset;
+  final String categoryKey;
   final bool showChevron;
   final bool isExpanded;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final visual = _CategoryVisual.fromAsset(categoryIconAsset);
+    final visual = _CategoryVisual.fromKey(categoryKey);
 
     return Material(
       color: Colors.transparent,
@@ -74,17 +74,17 @@ class _CategoryVisual {
   final Color color;
   final IconData icon;
 
-  static _CategoryVisual fromAsset(String assetPath) {
-    if (assetPath.contains('body')) {
+  static _CategoryVisual fromKey(String categoryKey) {
+    if (categoryKey == 'body') {
       return const _CategoryVisual(color: Color(0xFFF97316), icon: Icons.build);
     }
-    if (assetPath.contains('fuel')) {
+    if (categoryKey == 'fuel') {
       return const _CategoryVisual(
         color: Color(0xFFF59E0B),
         icon: Icons.local_gas_station,
       );
     }
-    if (assetPath.contains('propan')) {
+    if (categoryKey == 'propan') {
       return const _CategoryVisual(
         color: Color(0xFFA42DA2),
         icon: Icons.local_fire_department,

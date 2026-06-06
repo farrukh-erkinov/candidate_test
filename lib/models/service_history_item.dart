@@ -29,7 +29,7 @@ class ServiceHistoryItem {
     this.rating,
     required this.status,
     required this.category,
-    required this.categoryIconAsset,
+    required this.categoryKey,
     required this.dateLabel,
     required this.dateValue,
     required this.odometer,
@@ -48,7 +48,7 @@ class ServiceHistoryItem {
   final double? rating;
   final ServiceStatus status;
   final String category;
-  final String categoryIconAsset;
+  final String categoryKey;
   final String dateLabel;
   final String dateValue;
   final String odometer;
