@@ -6,44 +6,56 @@ class ServiceCategoryRow extends StatelessWidget {
     required this.category,
     required this.categoryIconAsset,
     this.showChevron = true,
+    this.isExpanded = false,
+    this.onTap,
   });
 
   final String category;
   final String categoryIconAsset;
   final bool showChevron;
+  final bool isExpanded;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final visual = _CategoryVisual.fromAsset(categoryIconAsset);
 
-    return Row(
-      children: [
-        Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            color: visual.color,
-            shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: showChevron ? onTap : null,
+      behavior: HitTestBehavior.opaque,
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: visual.color,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(visual.icon, color: Colors.white, size: 13),
           ),
-          child: Icon(visual.icon, color: Colors.white, size: 13),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            category,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              height: 1.25,
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              category,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                height: 1.25,
+              ),
             ),
           ),
-        ),
-        if (showChevron)
-          const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 20),
-      ],
+          if (showChevron)
+            Icon(
+              isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              color: Colors.white,
+              size: 20,
+            ),
+        ],
+      ),
     );
   }
 }

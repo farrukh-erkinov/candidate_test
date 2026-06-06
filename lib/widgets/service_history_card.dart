@@ -7,49 +7,213 @@ import 'service_category_row.dart';
 import 'status_badge.dart';
 
 class ServiceHistoryCard extends StatelessWidget {
-  const ServiceHistoryCard({super.key, required this.item});
+  const ServiceHistoryCard({
+    super.key,
+    required this.item,
+    this.isExpanded = false,
+    this.onToggleExpanded,
+  });
+
+  final ServiceHistoryItem item;
+  final bool isExpanded;
+  final VoidCallback? onToggleExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final card = GlassContainer(
+      width: double.infinity,
+      borderRadius: BorderRadius.circular(16),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StatusBadge(status: item.status),
+          const SizedBox(height: 12),
+          if (!item.compact) ...[
+            _ProviderRow(item: item),
+            const SizedBox(height: 12),
+            const _CardDivider(),
+            const SizedBox(height: 12),
+          ],
+          _MetricRow(item: item),
+          const SizedBox(height: 12),
+          const _CardDivider(),
+          const SizedBox(height: 12),
+          ServiceCategoryRow(
+            category: item.category,
+            categoryIconAsset: item.categoryIconAsset,
+            showChevron: item.showChevron,
+            isExpanded: isExpanded,
+            onTap: onToggleExpanded,
+          ),
+          if (isExpanded)
+            _ExpandedDetails(item: item)
+          else ...[
+            const SizedBox(height: 12),
+            const _CardDivider(),
+          ],
+          const SizedBox(height: 12),
+          _CostSection(cost: item.cost),
+          if (isExpanded) const SizedBox(height: 22) else const Spacer(),
+          NeonButton(label: 'Подробнее', onPressed: () {}),
+        ],
+      ),
+    );
+
+    if (isExpanded) {
+      return SizedBox(width: double.infinity, child: card);
+    }
+
+    return SizedBox(
+      height: item.compact ? 314 : 374,
+      width: double.infinity,
+      child: card,
+    );
+  }
+}
+
+class _ExpandedDetails extends StatelessWidget {
+  const _ExpandedDetails({required this.item});
 
   final ServiceHistoryItem item;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: item.compact ? 314 : 374,
-      width: double.infinity,
-      child: GlassContainer(
-        borderRadius: BorderRadius.circular(16),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            StatusBadge(status: item.status),
-            const SizedBox(height: 12),
-            if (!item.compact) ...[
-              _ProviderRow(item: item),
-              const SizedBox(height: 12),
-              const _CardDivider(),
-              const SizedBox(height: 12),
-            ],
-            _MetricRow(item: item),
-            const SizedBox(height: 12),
-            const _CardDivider(),
-            const SizedBox(height: 12),
-            ServiceCategoryRow(
-              category: item.category,
-              categoryIconAsset: item.categoryIconAsset,
-              showChevron: item.showChevron,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (item.details.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          for (final detail in item.details)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                '– $detail',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  height: 1.25,
+                ),
+              ),
             ),
-            const SizedBox(height: 12),
-            const _CardDivider(),
-            const SizedBox(height: 12),
-            _CostSection(cost: item.cost),
-            const Spacer(),
-            NeonButton(label: 'Подробнее', onPressed: () {}),
-          ],
-        ),
-      ),
+        ],
+        if (item.showCarPreview) ...[
+          const SizedBox(height: 6),
+          const Center(child: _CarPreview()),
+        ],
+        const SizedBox(height: 12),
+        const _CardDivider(),
+      ],
     );
   }
+}
+
+class _CarPreview extends StatelessWidget {
+  const _CarPreview();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 214,
+      height: 72,
+      child: CustomPaint(painter: _CarPreviewPainter()),
+    );
+  }
+}
+
+class _CarPreviewPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bodyPaint = Paint()..color = const Color(0xFF9CA3AF);
+    final darkPaint = Paint()..color = const Color(0xFF040811);
+    final windowPaint = Paint()..color = const Color(0xFFD1D5DB);
+    final accentPaint = Paint()..color = const Color(0xFFFF4B45);
+
+    final body = Path()
+      ..moveTo(size.width * 0.08, size.height * 0.62)
+      ..lineTo(size.width * 0.12, size.height * 0.42)
+      ..lineTo(size.width * 0.33, size.height * 0.36)
+      ..quadraticBezierTo(
+        size.width * 0.42,
+        size.height * 0.18,
+        size.width * 0.57,
+        size.height * 0.22,
+      )
+      ..lineTo(size.width * 0.87, size.height * 0.43)
+      ..quadraticBezierTo(
+        size.width * 0.98,
+        size.height * 0.47,
+        size.width * 0.96,
+        size.height * 0.76,
+      )
+      ..lineTo(size.width * 0.89, size.height * 0.76)
+      ..quadraticBezierTo(
+        size.width * 0.87,
+        size.height * 0.58,
+        size.width * 0.78,
+        size.height * 0.58,
+      )
+      ..lineTo(size.width * 0.24, size.height * 0.73)
+      ..quadraticBezierTo(
+        size.width * 0.21,
+        size.height * 0.57,
+        size.width * 0.14,
+        size.height * 0.58,
+      )
+      ..close();
+    canvas.drawPath(body, bodyPaint);
+
+    final window = Path()
+      ..moveTo(size.width * 0.3, size.height * 0.36)
+      ..quadraticBezierTo(
+        size.width * 0.42,
+        size.height * 0.2,
+        size.width * 0.58,
+        size.height * 0.27,
+      )
+      ..lineTo(size.width * 0.66, size.height * 0.42)
+      ..lineTo(size.width * 0.3, size.height * 0.42)
+      ..close();
+    canvas.drawPath(window, windowPaint);
+
+    canvas.drawLine(
+      Offset(size.width * 0.42, size.height * 0.24),
+      Offset(size.width * 0.42, size.height * 0.43),
+      Paint()
+        ..color = Colors.white
+        ..strokeWidth = 4,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.5, size.height * 0.24),
+      Offset(size.width * 0.5, size.height * 0.43),
+      Paint()
+        ..color = Colors.white
+        ..strokeWidth = 4,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(
+        size.width * 0.58,
+        size.height * 0.48,
+        size.width * 0.19,
+        size.height * 0.14,
+      ),
+      accentPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.2, size.height * 0.76),
+      size.width * 0.07,
+      darkPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.82, size.height * 0.76),
+      size.width * 0.07,
+      darkPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _ProviderRow extends StatelessWidget {

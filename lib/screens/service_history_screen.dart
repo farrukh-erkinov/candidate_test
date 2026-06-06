@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/service_history_item.dart';
+import '../screens/filters_screen.dart';
+import '../widgets/empty_service_history_state.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/license_plate.dart';
 import '../widgets/search_filter_row.dart';
+import '../widgets/selected_filter_chips.dart';
 import '../widgets/service_history_card.dart';
 
-class ServiceHistoryScreen extends StatelessWidget {
+class ServiceHistoryScreen extends StatefulWidget {
   const ServiceHistoryScreen({super.key});
 
+  @override
+  State<ServiceHistoryScreen> createState() => _ServiceHistoryScreenState();
+}
+
+class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
   static const _backgroundAsset = 'assets/images/service_history_bg.png';
   static const _vakuumLogo = 'assets/images/vakuum_center.png';
   static const _masterproLogo = 'assets/images/masterpro.png';
@@ -21,6 +29,7 @@ class ServiceHistoryScreen extends StatelessWidget {
 
   static const _items = <ServiceHistoryItem>[
     ServiceHistoryItem(
+      id: 'vakuum_center',
       providerName: 'Vakuum Center',
       providerLogoAsset: _vakuumLogo,
       rating: 4.8,
@@ -32,8 +41,12 @@ class ServiceHistoryScreen extends StatelessWidget {
       odometer: '38 500',
       cost: '–',
       showChevron: true,
+      isRecent: true,
+      details: ['Локальная покраска'],
+      showCarPreview: true,
     ),
     ServiceHistoryItem(
+      id: 'masterpro',
       providerName: 'MasterPro',
       providerLogoAsset: _masterproLogo,
       rating: 4.8,
@@ -45,8 +58,14 @@ class ServiceHistoryScreen extends StatelessWidget {
       odometer: '40 300',
       cost: '–',
       showChevron: true,
+      details: [
+        'Замена масла двигателя',
+        'Замена масляного фильтра',
+        'Чистка форсунок (ультразвук/на стенде)',
+      ],
     ),
     ServiceHistoryItem(
+      id: 'azs_250',
       status: ServiceStatus.completed,
       category: 'АЗС',
       categoryIconAsset: _fuelIcon,
@@ -56,8 +75,10 @@ class ServiceHistoryScreen extends StatelessWidget {
       cost: '250 000',
       compact: true,
       showChevron: false,
+      isRecent: true,
     ),
     ServiceHistoryItem(
+      id: 'propan_quvvat',
       providerName: 'Propan Quvvat',
       providerLogoAsset: _propanLogo,
       rating: 4.8,
@@ -70,25 +91,140 @@ class ServiceHistoryScreen extends StatelessWidget {
       cost: '412 000',
       showChevron: false,
     ),
+    ServiceHistoryItem(
+      id: 'fath_oil',
+      providerName: 'FathOil',
+      providerLogoAsset: _propanLogo,
+      rating: 4.8,
+      status: ServiceStatus.completed,
+      category: 'АЗС',
+      categoryIconAsset: _fuelIcon,
+      dateLabel: 'Дата конца',
+      dateValue: '07.03.2026',
+      odometer: '38 050',
+      cost: '318 000',
+      showChevron: false,
+      showInDefault: false,
+      isRecent: true,
+    ),
+    ServiceHistoryItem(
+      id: 'azs_412',
+      status: ServiceStatus.completed,
+      category: 'АЗС',
+      categoryIconAsset: _fuelIcon,
+      dateLabel: 'Дата конца',
+      dateValue: '04.03.2026',
+      odometer: '37 290',
+      cost: '412 000',
+      compact: true,
+      showChevron: false,
+      showInDefault: false,
+      isRecent: true,
+    ),
   ];
+
+  ServiceHistoryFilter _filter = const ServiceHistoryFilter();
+  final Set<String> _expandedItemIds = {};
 
   @override
   Widget build(BuildContext context) {
-    return const AnnotatedRegion<SystemUiOverlayStyle>(
+    final items = _visibleItems;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: Color(0xFF040811),
+        backgroundColor: const Color(0xFF040811),
         body: SafeArea(
           bottom: false,
-          child: SingleChildScrollView(child: _ServiceHistoryBody()),
+          child: SingleChildScrollView(
+            child: _ServiceHistoryBody(
+              filter: _filter,
+              items: items,
+              expandedItemIds: _expandedItemIds,
+              onFilterTap: _openFilters,
+              onRemoveCategory: _removeCategory,
+              onRemoveStatus: _removeStatus,
+              onRemovePeriod: _removePeriod,
+              onToggleExpanded: _toggleExpanded,
+            ),
+          ),
         ),
       ),
     );
   }
+
+  List<ServiceHistoryItem> get _visibleItems {
+    if (!_filter.hasActiveFilters) {
+      return _items.where((item) => item.showInDefault).toList();
+    }
+
+    return _items.where(_filter.matches).toList();
+  }
+
+  Future<void> _openFilters() async {
+    final nextFilter = await Navigator.of(context).push<ServiceHistoryFilter>(
+      MaterialPageRoute(
+        builder: (context) => FiltersScreen(initialFilter: _filter),
+      ),
+    );
+
+    if (nextFilter == null) {
+      return;
+    }
+
+    setState(() {
+      _filter = nextFilter;
+      _expandedItemIds.clear();
+    });
+  }
+
+  void _removeCategory(String category) {
+    setState(() {
+      _filter = _filter.removeCategory(category);
+    });
+  }
+
+  void _removeStatus() {
+    setState(() {
+      _filter = _filter.removeStatus();
+    });
+  }
+
+  void _removePeriod() {
+    setState(() {
+      _filter = _filter.removePeriod();
+    });
+  }
+
+  void _toggleExpanded(String id) {
+    setState(() {
+      if (!_expandedItemIds.remove(id)) {
+        _expandedItemIds.add(id);
+      }
+    });
+  }
 }
 
 class _ServiceHistoryBody extends StatelessWidget {
-  const _ServiceHistoryBody();
+  const _ServiceHistoryBody({
+    required this.filter,
+    required this.items,
+    required this.expandedItemIds,
+    required this.onFilterTap,
+    required this.onRemoveCategory,
+    required this.onRemoveStatus,
+    required this.onRemovePeriod,
+    required this.onToggleExpanded,
+  });
+
+  final ServiceHistoryFilter filter;
+  final List<ServiceHistoryItem> items;
+  final Set<String> expandedItemIds;
+  final VoidCallback onFilterTap;
+  final ValueChanged<String> onRemoveCategory;
+  final VoidCallback onRemoveStatus;
+  final VoidCallback onRemovePeriod;
+  final ValueChanged<String> onToggleExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -117,23 +253,45 @@ class _ServiceHistoryBody extends StatelessWidget {
                   const SizedBox(height: 24),
                   const _LastUpdatedRow(),
                   const SizedBox(height: 24),
-                  const SearchFilterRow(),
-                  const SizedBox(height: 16),
-                  const _ServiceCountText(),
-                  const SizedBox(height: 16),
-                  for (
-                    var index = 0;
-                    index < ServiceHistoryScreen._items.length;
-                    index++
-                  ) ...[
-                    ServiceHistoryCard(
-                      item: ServiceHistoryScreen._items[index],
+                  SearchFilterRow(
+                    onFilterTap: onFilterTap,
+                    activeFilterCount: filter.activeCount,
+                  ),
+                  if (filter.hasActiveFilters) ...[
+                    const SizedBox(height: 10),
+                    SelectedFilterChips(
+                      filter: filter,
+                      onRemoveCategory: onRemoveCategory,
+                      onRemoveStatus: onRemoveStatus,
+                      onRemovePeriod: onRemovePeriod,
                     ),
-                    if (index != ServiceHistoryScreen._items.length - 1)
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 12),
+                  ] else
+                    const SizedBox(height: 16),
+                  _ServiceCountText(
+                    label: filter.hasActiveFilters
+                        ? 'Найдено: '
+                        : 'Всего сервисов: ',
+                    count: filter.hasActiveFilters ? items.length : 720,
+                  ),
+                  const SizedBox(height: 16),
+                  if (items.isEmpty)
+                    const EmptyServiceHistoryState()
+                  else ...[
+                    for (var index = 0; index < items.length; index++) ...[
+                      ServiceHistoryCard(
+                        item: items[index],
+                        isExpanded: expandedItemIds.contains(items[index].id),
+                        onToggleExpanded: items[index].showChevron
+                            ? () => onToggleExpanded(items[index].id)
+                            : null,
+                      ),
+                      if (index != items.length - 1) const SizedBox(height: 16),
+                    ],
+                    const SizedBox(height: 24),
+                    if (!filter.hasActiveFilters)
+                      const Center(child: _LoadingIndicatorDots()),
                   ],
-                  const SizedBox(height: 24),
-                  const Center(child: _LoadingIndicatorDots()),
                 ],
               ),
             ),
@@ -153,7 +311,7 @@ class _BackgroundTexture extends StatelessWidget {
       child: Opacity(
         opacity: 0.08,
         child: Image.asset(
-          ServiceHistoryScreen._backgroundAsset,
+          _ServiceHistoryScreenState._backgroundAsset,
           fit: BoxFit.cover,
           alignment: Alignment.topCenter,
           errorBuilder: (context, error, stackTrace) {
@@ -327,23 +485,26 @@ class _LastUpdatedRow extends StatelessWidget {
 }
 
 class _ServiceCountText extends StatelessWidget {
-  const _ServiceCountText();
+  const _ServiceCountText({required this.label, required this.count});
+
+  final String label;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
     return RichText(
-      text: const TextSpan(
-        style: TextStyle(
+      text: TextSpan(
+        style: const TextStyle(
           color: Color(0xFF9CA3AF),
           fontSize: 14,
           fontWeight: FontWeight.w400,
           height: 20 / 14,
         ),
         children: [
-          TextSpan(text: 'Всего сервисов: '),
+          TextSpan(text: label),
           TextSpan(
-            text: '720',
-            style: TextStyle(
+            text: '$count',
+            style: const TextStyle(
               color: Color(0xFF00D1FF),
               fontWeight: FontWeight.w700,
             ),
