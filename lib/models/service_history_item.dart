@@ -78,6 +78,17 @@ class ServiceHistoryFilter {
         period != ServicePeriod.all;
   }
 
+  bool hasSameValuesAs(ServiceHistoryFilter other) {
+    if (status != other.status || period != other.period) {
+      return false;
+    }
+    if (categories.length != other.categories.length) {
+      return false;
+    }
+
+    return categories.every(other.categories.contains);
+  }
+
   int get activeCount {
     return categories.length +
         (status == null ? 0 : 1) +

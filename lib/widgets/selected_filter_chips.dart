@@ -30,7 +30,7 @@ class SelectedFilterChips extends StatelessWidget {
         for (final category in filter.categories)
           _FilterChip(
             label: category,
-            icon: Icons.local_gas_station,
+            icon: _categoryIcon(category),
             onRemove: () => onRemoveCategory(category),
           ),
         if (filter.status != null)
@@ -39,6 +39,28 @@ class SelectedFilterChips extends StatelessWidget {
           _FilterChip(label: filter.period.label, onRemove: onRemovePeriod),
       ],
     );
+  }
+
+  IconData _categoryIcon(String category) {
+    return switch (category) {
+      'АЗС' => Icons.local_gas_station,
+      'АГНКС (метан)' => Icons.propane,
+      'АГЗС (пропан)' => Icons.local_fire_department,
+      'Электро-станция' || 'Электро и гибрид' => Icons.ev_station,
+      'Парковка' => Icons.local_parking,
+      'Автомойка' => Icons.local_car_wash,
+      'Замена масла' => Icons.oil_barrel,
+      'Двигатель' => Icons.car_repair,
+      'Диагностика' => Icons.monitor_heart,
+      'Шиномонтаж' => Icons.tire_repair,
+      'Ходовая часть' => Icons.directions_car,
+      'Кузов' => Icons.build,
+      'Электрика' => Icons.lightbulb,
+      'Детейлинг' => Icons.cleaning_services,
+      'Тюнинг' => Icons.speed,
+      'СТО' => Icons.engineering,
+      _ => Icons.tune,
+    };
   }
 }
 
@@ -63,6 +85,8 @@ class _FilterChip extends StatelessWidget {
           ],
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 12,
@@ -71,19 +95,26 @@ class _FilterChip extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          GestureDetector(
+          InkWell(
             onTap: onRemove,
-            child: Container(
-              width: 16,
-              height: 16,
-              decoration: const BoxDecoration(
-                color: Color(0xFFCFD8E5),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.close,
-                color: Color(0xFF040811),
-                size: 12,
+            borderRadius: BorderRadius.circular(16),
+            child: SizedBox(
+              width: 28,
+              height: 28,
+              child: Center(
+                child: Container(
+                  width: 16,
+                  height: 16,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFCFD8E5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Color(0xFF040811),
+                    size: 12,
+                  ),
+                ),
               ),
             ),
           ),

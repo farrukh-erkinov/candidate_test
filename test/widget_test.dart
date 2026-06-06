@@ -34,9 +34,9 @@ void main() {
     await tester.pump();
 
     await _openFilters(tester);
-    await tester.tap(find.text('АЗС').first);
-    await _tapVisible(tester, 'Завершен');
-    await _tapVisible(tester, 'Последние 7 дней');
+    await _tapVisibleByKey(tester, const ValueKey('filter_category_АЗС'));
+    await _tapVisibleByKey(tester, const ValueKey('filter_status_completed'));
+    await _tapVisibleByKey(tester, const ValueKey('filter_period_last7'));
     await _applyFilters(tester);
 
     expect(find.text('FathOil'), findsOneWidget);
@@ -52,9 +52,9 @@ void main() {
     await tester.pump();
 
     await _openFilters(tester);
-    await tester.tap(find.text('АЗС').first);
-    await _tapVisible(tester, 'В процессе');
-    await _tapVisible(tester, 'Последние 7 дней');
+    await _tapVisibleByKey(tester, const ValueKey('filter_category_АЗС'));
+    await _tapVisibleByKey(tester, const ValueKey('filter_status_in_progress'));
+    await _tapVisibleByKey(tester, const ValueKey('filter_period_last7'));
     await _applyFilters(tester);
 
     expect(
@@ -81,8 +81,8 @@ Future<void> _applyFilters(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-Future<void> _tapVisible(WidgetTester tester, String text) async {
-  final finder = find.text(text);
+Future<void> _tapVisibleByKey(WidgetTester tester, Key key) async {
+  final finder = find.byKey(key);
   await tester.ensureVisible(finder);
   await tester.tap(finder);
   await tester.pumpAndSettle();

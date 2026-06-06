@@ -18,51 +18,108 @@ class _FiltersScreenState extends State<FiltersScreen> {
   static const _backgroundAsset = 'assets/images/service_history_bg.png';
 
   static const _categories = <_CategoryFilterOption>[
-    _CategoryFilterOption('АЗС', Icons.local_gas_station, Color(0xFFF59E0B)),
-    _CategoryFilterOption('АГНКС\n(метан)', Icons.propane, Color(0xFFC24141)),
     _CategoryFilterOption(
-      'АГЗС\n(пропан)',
-      Icons.local_fire_department,
-      Color(0xFFC143B9),
+      label: 'АЗС',
+      value: 'АЗС',
+      icon: Icons.local_gas_station,
+      color: Color(0xFFF59E0B),
     ),
     _CategoryFilterOption(
-      'Электро-\nстанция',
-      Icons.ev_station,
-      Color(0xFF14D8CF),
-    ),
-    _CategoryFilterOption('Парковка', Icons.local_parking, Color(0xFF0891B2)),
-    _CategoryFilterOption('Автомойка', Icons.local_car_wash, Color(0xFF0EA5E9)),
-    _CategoryFilterOption('Замена\nмасла', Icons.oil_barrel, Color(0xFFB7791F)),
-    _CategoryFilterOption('Двигатель', Icons.car_repair, Color(0xFFEF4444)),
-    _CategoryFilterOption(
-      'Диагнос-\nтика',
-      Icons.monitor_heart,
-      Color(0xFF8B5CF6),
+      label: 'АГНКС\n(метан)',
+      value: 'АГНКС (метан)',
+      icon: Icons.propane,
+      color: Color(0xFFC24141),
     ),
     _CategoryFilterOption(
-      'Шиномон-\nтаж',
-      Icons.tire_repair,
-      Color(0xFF10B981),
+      label: 'АГЗС\n(пропан)',
+      value: 'АГЗС (пропан)',
+      icon: Icons.local_fire_department,
+      color: Color(0xFFC143B9),
     ),
     _CategoryFilterOption(
-      'Ходовая\nчасть',
-      Icons.directions_car,
-      Color(0xFF06B6D4),
+      label: 'Электро-\nстанция',
+      value: 'Электро-станция',
+      icon: Icons.ev_station,
+      color: Color(0xFF14D8CF),
     ),
-    _CategoryFilterOption('Кузов', Icons.build, Color(0xFFF97316)),
     _CategoryFilterOption(
-      'Электро и\nгибрид',
-      Icons.battery_charging_full,
-      Color(0xFF3B82F6),
+      label: 'Парковка',
+      value: 'Парковка',
+      icon: Icons.local_parking,
+      color: Color(0xFF0891B2),
     ),
-    _CategoryFilterOption('Электрика', Icons.lightbulb, Color(0xFFEAB308)),
     _CategoryFilterOption(
-      'Детейлинг',
-      Icons.cleaning_services,
-      Color(0xFFEC4899),
+      label: 'Автомойка',
+      value: 'Автомойка',
+      icon: Icons.local_car_wash,
+      color: Color(0xFF0EA5E9),
     ),
-    _CategoryFilterOption('Тюнинг', Icons.speed, Color(0xFF6366F1)),
-    _CategoryFilterOption('СТО', Icons.engineering, Color(0xFF94A3B8)),
+    _CategoryFilterOption(
+      label: 'Замена\nмасла',
+      value: 'Замена масла',
+      icon: Icons.oil_barrel,
+      color: Color(0xFFB7791F),
+    ),
+    _CategoryFilterOption(
+      label: 'Двигатель',
+      value: 'Двигатель',
+      icon: Icons.car_repair,
+      color: Color(0xFFEF4444),
+    ),
+    _CategoryFilterOption(
+      label: 'Диагнос-\nтика',
+      value: 'Диагностика',
+      icon: Icons.monitor_heart,
+      color: Color(0xFF8B5CF6),
+    ),
+    _CategoryFilterOption(
+      label: 'Шиномон-\nтаж',
+      value: 'Шиномонтаж',
+      icon: Icons.tire_repair,
+      color: Color(0xFF10B981),
+    ),
+    _CategoryFilterOption(
+      label: 'Ходовая\nчасть',
+      value: 'Ходовая часть',
+      icon: Icons.directions_car,
+      color: Color(0xFF06B6D4),
+    ),
+    _CategoryFilterOption(
+      label: 'Кузов',
+      value: 'Кузов',
+      icon: Icons.build,
+      color: Color(0xFFF97316),
+    ),
+    _CategoryFilterOption(
+      label: 'Электро и\nгибрид',
+      value: 'Электро и гибрид',
+      icon: Icons.battery_charging_full,
+      color: Color(0xFF3B82F6),
+    ),
+    _CategoryFilterOption(
+      label: 'Электрика',
+      value: 'Электрика',
+      icon: Icons.lightbulb,
+      color: Color(0xFFEAB308),
+    ),
+    _CategoryFilterOption(
+      label: 'Детейлинг',
+      value: 'Детейлинг',
+      icon: Icons.cleaning_services,
+      color: Color(0xFFEC4899),
+    ),
+    _CategoryFilterOption(
+      label: 'Тюнинг',
+      value: 'Тюнинг',
+      icon: Icons.speed,
+      color: Color(0xFF6366F1),
+    ),
+    _CategoryFilterOption(
+      label: 'СТО',
+      value: 'СТО',
+      icon: Icons.engineering,
+      color: Color(0xFF94A3B8),
+    ),
   ];
 
   late ServiceHistoryFilter _filter;
@@ -75,6 +132,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canApply = !_filter.hasSameValuesAs(widget.initialFilter);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -136,7 +195,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         ),
                         const SizedBox(height: 26),
                         _ApplyButton(
-                          enabled: _filter.hasActiveFilters,
+                          enabled: canApply,
                           onApply: () => Navigator.of(context).pop(_filter),
                         ),
                       ],
@@ -248,15 +307,19 @@ class _FiltersHeader extends StatelessWidget {
             Positioned(
               right: 0,
               top: 17,
-              child: GestureDetector(
+              child: InkWell(
                 onTap: onReset,
-                child: const Text(
-                  'Сбросить',
-                  style: TextStyle(
-                    color: Color(0xFFFF4B45),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    height: 1.25,
+                borderRadius: BorderRadius.circular(8),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  child: Text(
+                    'Сбросить',
+                    style: TextStyle(
+                      color: Color(0xFFFF4B45),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      height: 1.25,
+                    ),
                   ),
                 ),
               ),
@@ -305,9 +368,10 @@ class _CategoryGrid extends StatelessWidget {
       children: [
         for (final option in categories)
           _CategoryOptionTile(
+            key: ValueKey('filter_category_${option.value}'),
             option: option,
-            isSelected: selectedCategories.contains(option.labelPlain),
-            onTap: () => onToggle(option.labelPlain),
+            isSelected: selectedCategories.contains(option.value),
+            onTap: () => onToggle(option.value),
           ),
       ],
     );
@@ -316,6 +380,7 @@ class _CategoryGrid extends StatelessWidget {
 
 class _CategoryOptionTile extends StatelessWidget {
   const _CategoryOptionTile({
+    super.key,
     required this.option,
     required this.isSelected,
     required this.onTap,
@@ -329,66 +394,72 @@ class _CategoryOptionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 78,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Column(
               children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: option.color,
-                    shape: BoxShape.circle,
-                    boxShadow: isSelected
-                        ? const [
-                            BoxShadow(
-                              color: Color(0x9900C950),
-                              blurRadius: 24,
-                              spreadRadius: 2,
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Icon(option.icon, color: Colors.white, size: 17),
-                ),
-                if (isSelected)
-                  Positioned(
-                    right: -2,
-                    top: -2,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF00C950),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: option.color,
                         shape: BoxShape.circle,
+                        boxShadow: isSelected
+                            ? const [
+                                BoxShadow(
+                                  color: Color(0x9900C950),
+                                  blurRadius: 24,
+                                  spreadRadius: 2,
+                                ),
+                              ]
+                            : null,
                       ),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 11,
-                      ),
+                      child: Icon(option.icon, color: Colors.white, size: 17),
                     ),
+                    if (isSelected)
+                      Positioned(
+                        right: -2,
+                        top: -2,
+                        child: Container(
+                          width: 16,
+                          height: 16,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF00C950),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 11,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  option.label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    height: 1.12,
                   ),
+                ),
               ],
             ),
-            const SizedBox(height: 7),
-            Text(
-              option.label,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                height: 1.12,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -408,18 +479,21 @@ class _StatusOptions extends StatelessWidget {
       child: Row(
         children: [
           _SelectablePill(
+            key: const ValueKey('filter_status_all'),
             label: 'Все',
             isSelected: selectedStatus == null,
             onTap: () => onChanged(null),
           ),
           const SizedBox(width: 10),
           _SelectablePill(
+            key: const ValueKey('filter_status_completed'),
             label: ServiceStatus.completed.label,
             isSelected: selectedStatus == ServiceStatus.completed,
             onTap: () => onChanged(ServiceStatus.completed),
           ),
           const SizedBox(width: 10),
           _SelectablePill(
+            key: const ValueKey('filter_status_in_progress'),
             label: ServiceStatus.inProgress.label,
             isSelected: selectedStatus == ServiceStatus.inProgress,
             onTap: () => onChanged(ServiceStatus.inProgress),
@@ -443,12 +517,14 @@ class _PeriodOptions extends StatelessWidget {
       child: Row(
         children: [
           _SelectablePill(
+            key: const ValueKey('filter_period_all'),
             label: ServicePeriod.all.label,
             isSelected: selectedPeriod == ServicePeriod.all,
             onTap: () => onChanged(ServicePeriod.all),
           ),
           const SizedBox(width: 10),
           _SelectablePill(
+            key: const ValueKey('filter_period_last7'),
             label: ServicePeriod.last7.label,
             isSelected: selectedPeriod == ServicePeriod.last7,
             onTap: () => onChanged(ServicePeriod.last7),
@@ -461,6 +537,7 @@ class _PeriodOptions extends StatelessWidget {
 
 class _SelectablePill extends StatelessWidget {
   const _SelectablePill({
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
@@ -484,27 +561,32 @@ class _SelectablePill extends StatelessWidget {
       ),
     );
 
-    return GestureDetector(
-      onTap: onTap,
-      child: isSelected
-          ? Container(
-              height: 36,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: const Color(0xFF00D1FF),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: isSelected
+            ? Container(
+                height: 36,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00D1FF),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x8000D1FF), blurRadius: 24),
+                  ],
+                ),
+                child: child,
+              )
+            : GlassContainer(
+                height: 36,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(color: Color(0x8000D1FF), blurRadius: 24),
-                ],
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: child,
               ),
-              child: child,
-            )
-          : GlassContainer(
-              height: 36,
-              borderRadius: BorderRadius.circular(16),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: child,
-            ),
+      ),
     );
   }
 }
@@ -546,11 +628,15 @@ class _ApplyButton extends StatelessWidget {
 }
 
 class _CategoryFilterOption {
-  const _CategoryFilterOption(this.label, this.icon, this.color);
+  const _CategoryFilterOption({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
 
   final String label;
+  final String value;
   final IconData icon;
   final Color color;
-
-  String get labelPlain => label.replaceAll('\n', ' ');
 }

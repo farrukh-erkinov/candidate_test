@@ -94,7 +94,6 @@ class _ServiceHistoryScreenState extends State<ServiceHistoryScreen> {
     ServiceHistoryItem(
       id: 'fath_oil',
       providerName: 'FathOil',
-      providerLogoAsset: _propanLogo,
       rating: 4.8,
       status: ServiceStatus.completed,
       category: 'АЗС',

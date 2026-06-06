@@ -18,7 +18,7 @@ class StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(100),
       ),
       child: Text(
-        _statusLabel,
+        status.label,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 12,
@@ -28,14 +28,6 @@ class StatusBadge extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String get _statusLabel {
-    return switch (status) {
-      ServiceStatus.inProgress => 'В процессе',
-      ServiceStatus.rejected => 'Отказан',
-      ServiceStatus.completed => 'Завершен',
-    };
   }
 
   Color get _statusColor {

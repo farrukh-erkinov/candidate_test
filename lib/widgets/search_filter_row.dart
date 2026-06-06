@@ -36,73 +36,81 @@ class SearchFilterRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        GestureDetector(
-          onTap: onFilterTap,
-          child: SizedBox(
-            width: 56,
-            height: 56,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                GlassContainer(
-                  width: 56,
-                  height: 56,
-                  borderRadius: BorderRadius.circular(100),
-                  child: Center(
-                    child: Icon(
-                      Icons.tune,
-                      color: activeFilterCount > 0
-                          ? const Color(0xFF040811)
-                          : Colors.white,
-                      size: 24,
+        Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(100),
+          child: InkWell(
+            onTap: onFilterTap,
+            borderRadius: BorderRadius.circular(100),
+            child: SizedBox(
+              width: 56,
+              height: 56,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  GlassContainer(
+                    width: 56,
+                    height: 56,
+                    borderRadius: BorderRadius.circular(100),
+                    child: Center(
+                      child: Icon(
+                        Icons.tune,
+                        color: activeFilterCount > 0
+                            ? const Color(0xFF040811)
+                            : Colors.white,
+                        size: 24,
+                      ),
                     ),
                   ),
-                ),
-                if (activeFilterCount > 0) ...[
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF00D1FF),
+                  if (activeFilterCount > 0) ...[
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF00D1FF),
+                            shape: BoxShape.circle,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x9900D1FF),
+                                blurRadius: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Icon(
+                        Icons.tune,
+                        color: const Color(0xFF040811),
+                        size: 24,
+                      ),
+                    ),
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFF4B45),
                           shape: BoxShape.circle,
-                          boxShadow: const [
-                            BoxShadow(color: Color(0x9900D1FF), blurRadius: 24),
-                          ],
+                        ),
+                        child: Text(
+                          '$activeFilterCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Center(
-                    child: Icon(
-                      Icons.tune,
-                      color: const Color(0xFF040811),
-                      size: 24,
-                    ),
-                  ),
-                  Positioned(
-                    right: -2,
-                    top: -2,
-                    child: Container(
-                      width: 18,
-                      height: 18,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFF4B45),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        '$activeFilterCount',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          height: 1,
-                        ),
-                      ),
-                    ),
-                  ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),

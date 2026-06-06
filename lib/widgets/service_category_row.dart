@@ -20,41 +20,49 @@ class ServiceCategoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final visual = _CategoryVisual.fromAsset(categoryIconAsset);
 
-    return GestureDetector(
-      onTap: showChevron ? onTap : null,
-      behavior: HitTestBehavior.opaque,
-      child: Row(
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: visual.color,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(visual.icon, color: Colors.white, size: 13),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              category,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                height: 1.25,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: showChevron ? onTap : null,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: visual.color,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(visual.icon, color: Colors.white, size: 13),
               ),
-            ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  category,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+              if (showChevron)
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  color: Colors.white,
+                  size: 20,
+                ),
+            ],
           ),
-          if (showChevron)
-            Icon(
-              isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-              color: Colors.white,
-              size: 20,
-            ),
-        ],
+        ),
       ),
     );
   }
