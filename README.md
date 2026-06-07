@@ -1,16 +1,43 @@
-# candidate_test
+# Candidate Test
 
-A new Flutter project.
+Flutter-реализация экрана истории обслуживания автомобиля по предоставленному Figma-макету.
 
-## Getting Started
+## Что реализовано
 
-This project is a starting point for a Flutter application.
+* Экран истории обслуживания автомобиля
+* Раскрывающиеся карточки сервисных записей
+* Экран фильтров
+* Выбранные фильтры в виде chips
+* Состояние с найденными результатами
+* Состояние пустого результата
+* Локальные mock-данные
+* Локальные изображения/assets
 
-A few resources to get you started if this is your first Flutter project:
+## Стек
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* Flutter
+* Dart
+* Material
+* Без внешних UI-библиотек
+* Без дополнительных state-management библиотек
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Как запустить
+
+```bash
+flutter pub get
+flutter run
+```
+
+## Проверки
+
+```bash
+flutter analyze
+flutter test
+```
+
+## Примечания
+
+Приложение использует локальные mock-данные и локальные assets.
+Часть иконок реализована через стандартные Material icons, где точные Figma-векторы не были критичны для результата.
+
+Основной фокус проекта — аккуратная Flutter-вёрстка по макету, переиспользуемые виджеты, простая локальная логика фильтрации и чистая структура кода.
