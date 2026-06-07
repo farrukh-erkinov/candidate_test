@@ -114,106 +114,14 @@ class _CarPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Image.asset(
+      'assets/images/car_preview.png',
       width: 214,
       height: 72,
-      child: CustomPaint(painter: _CarPreviewPainter()),
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
     );
   }
-}
-
-class _CarPreviewPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final bodyPaint = Paint()..color = const Color(0xFF9CA3AF);
-    final darkPaint = Paint()..color = const Color(0xFF040811);
-    final windowPaint = Paint()..color = const Color(0xFFD1D5DB);
-    final accentPaint = Paint()..color = const Color(0xFFFF4B45);
-
-    final body = Path()
-      ..moveTo(size.width * 0.08, size.height * 0.62)
-      ..lineTo(size.width * 0.12, size.height * 0.42)
-      ..lineTo(size.width * 0.33, size.height * 0.36)
-      ..quadraticBezierTo(
-        size.width * 0.42,
-        size.height * 0.18,
-        size.width * 0.57,
-        size.height * 0.22,
-      )
-      ..lineTo(size.width * 0.87, size.height * 0.43)
-      ..quadraticBezierTo(
-        size.width * 0.98,
-        size.height * 0.47,
-        size.width * 0.96,
-        size.height * 0.76,
-      )
-      ..lineTo(size.width * 0.89, size.height * 0.76)
-      ..quadraticBezierTo(
-        size.width * 0.87,
-        size.height * 0.58,
-        size.width * 0.78,
-        size.height * 0.58,
-      )
-      ..lineTo(size.width * 0.24, size.height * 0.73)
-      ..quadraticBezierTo(
-        size.width * 0.21,
-        size.height * 0.57,
-        size.width * 0.14,
-        size.height * 0.58,
-      )
-      ..close();
-    canvas.drawPath(body, bodyPaint);
-
-    final window = Path()
-      ..moveTo(size.width * 0.3, size.height * 0.36)
-      ..quadraticBezierTo(
-        size.width * 0.42,
-        size.height * 0.2,
-        size.width * 0.58,
-        size.height * 0.27,
-      )
-      ..lineTo(size.width * 0.66, size.height * 0.42)
-      ..lineTo(size.width * 0.3, size.height * 0.42)
-      ..close();
-    canvas.drawPath(window, windowPaint);
-
-    canvas.drawLine(
-      Offset(size.width * 0.42, size.height * 0.24),
-      Offset(size.width * 0.42, size.height * 0.43),
-      Paint()
-        ..color = Colors.white
-        ..strokeWidth = 4,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.5, size.height * 0.24),
-      Offset(size.width * 0.5, size.height * 0.43),
-      Paint()
-        ..color = Colors.white
-        ..strokeWidth = 4,
-    );
-    canvas.drawRect(
-      Rect.fromLTWH(
-        size.width * 0.58,
-        size.height * 0.48,
-        size.width * 0.19,
-        size.height * 0.14,
-      ),
-      accentPaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.2, size.height * 0.76),
-      size.width * 0.07,
-      darkPaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.82, size.height * 0.76),
-      size.width * 0.07,
-      darkPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _ProviderRow extends StatelessWidget {

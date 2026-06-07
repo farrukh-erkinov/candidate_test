@@ -148,18 +148,12 @@ class _UzFlag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Image.asset(
+      'assets/images/uz_flag.png',
       width: 13,
-      height: 8,
-      child: Column(
-        children: const [
-          Expanded(child: ColoredBox(color: Color(0xFF0099B5))),
-          SizedBox(height: 0.4, child: ColoredBox(color: Color(0xFFE60026))),
-          Expanded(child: ColoredBox(color: Colors.white)),
-          SizedBox(height: 0.4, child: ColoredBox(color: Color(0xFFE60026))),
-          Expanded(child: ColoredBox(color: Color(0xFF1EB53A))),
-        ],
-      ),
+      height: 9,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
     );
   }
 }
